@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.module;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,6 +1,6 @@
 package com.luo.wifidemo;
 
-import com.luo.wifidemo.p2pdemo.WifiP2pDemoActivity;
+import com.luo.wifidemo.p2pdemo.ui.WifiP2pDemoActivity;
 
 import android.app.Activity;
 import android.content.Intent;

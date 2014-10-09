@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.controller;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

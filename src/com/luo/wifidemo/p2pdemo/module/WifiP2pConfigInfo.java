@@ -1,8 +1,6 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.module;
 
-
-
-class WifiP2pConfigInfo {
+public class WifiP2pConfigInfo {
 	
 	public static final int MSG_NULL = 20;
 	public static final int MSG_RECV_PEER_INFO = 21;

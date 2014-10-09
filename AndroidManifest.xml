@@ -35,11 +35,11 @@
         </activity>
 
         <!-- P2p Demo -->
-        <activity android:name=".p2pdemo.WifiP2pDemoActivity" >
+        <activity android:name="com.luo.wifidemo.p2pdemo.ui.WifiP2pDemoActivity" >
         </activity>
 
         <service
-            android:name=".p2pdemo.WifiP2pService"
+            android:name="com.luo.wifidemo.p2pdemo.controller.WifiP2pService"
             android:enabled="true" />
     </application>
 

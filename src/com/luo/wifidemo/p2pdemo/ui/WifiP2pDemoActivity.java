@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.ui;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +31,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.luo.wifidemo.R;
-import com.luo.wifidemo.p2pdemo.WifiP2pService.WifiP2pServiceBinder;
+import com.luo.wifidemo.p2pdemo.controller.WifiP2pActivityListener;
+import com.luo.wifidemo.p2pdemo.controller.WifiP2pService;
+import com.luo.wifidemo.p2pdemo.controller.WifiP2pService.WifiP2pServiceBinder;
+import com.luo.wifidemo.p2pdemo.module.PeerInfo;
+import com.luo.wifidemo.p2pdemo.module.Utility;
+import com.luo.wifidemo.p2pdemo.module.WiFiPeerListAdapter;
 import com.luo.wifidemo.util.Logger;
 
 /**
@@ -89,6 +93,9 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 	 */
 	private ProgressDialog mProgressDialog = null;
 	
+	/**
+	 * Inner Class
+	 */
 	static private class ActivityHandler extends Handler {
 		private static final String TAG = "ActivityHandler";
 		private WifiP2pDemoActivity mSelf;
@@ -236,6 +243,72 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 			Uri uri = data.getData();
 			mP2pService.getSendImageController().sendFile(uri , mP2pService);
 		}
+	}
+	
+	/**
+	 * Remove all peers and clear all fields. This is called on
+	 * BroadcastReceiver receiving a state change event.
+	 */
+	@Override
+	public void resetPeers() {
+		// clear the deviceListview
+		mDiscoveryPeersListView.setEnabled(false);
+		mDiscoveryPeersListView.setVisibility(View.GONE);
+		
+		// clear the detail's view
+		if( mDetailView != null ){
+			mDetailView.setVisibility(View.GONE);
+		}
+	}
+	
+	@Override
+	public void onDisconnect() {
+		mDetailView.setVisibility(View.GONE);
+	}
+	
+	@Override
+	public void onConnectionInfoAvailable(WifiP2pInfo info) {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+		}
+		mWifiP2pInfo = info;
+		bConnected = true;
+
+		/* Update ui */
+		mDetailView.setVisibility(View.VISIBLE);
+		// Update GroupOwner
+		TextView view = (TextView) findViewById(R.id.group_owner);
+		view.setText( getString(R.string.wifip2p_group_owner_text) + info.isGroupOwner );
+		// Update deviceInfo
+		view = (TextView) findViewById(R.id.device_info);
+		view.setText("Group Owner IP - "
+				+ info.groupOwnerAddress.getHostAddress() + "\n local ip:"
+				+ Utility.getLocalIpAddress());
+
+		Logger.d(this.getClass().getName(), "new connect device's info:" + info);
+		if (info.groupFormed && info.isGroupOwner) {
+			// Group don't need to report ip
+			findViewById(R.id.btn_send_ip).setVisibility( View.VISIBLE);
+		} else if (info.groupFormed) {
+			showSendFileVeiw();
+			showReportIPVeiw();
+		}
+
+		// hide the connect button
+		findViewById(R.id.btn_connect).setVisibility(View.GONE);		
+	}
+	
+	@Override
+	public void onPeersAvailable(WifiP2pDeviceList peers) {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+        }
+		mDiscoveryPeersListView.setEnabled(false);
+		mDiscoveryPeersListView.setVisibility(View.GONE);
+		mDiscoveryPeersAdapter.setDeviceList(peers.getDeviceList());
+		mDiscoveryPeersListView.setEnabled(true);
+		mDiscoveryPeersListView.setVisibility(View.VISIBLE);
+		mDiscoveryPeersListView.setAdapter(mDiscoveryPeersAdapter);		
 	}
 	
 	/**
@@ -505,71 +578,6 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 
 	}
 	
-	/**
-	 * Remove all peers and clear all fields. This is called on
-	 * BroadcastReceiver receiving a state change event.
-	 */
-	@Override
-	public void resetPeers() {
-		// clear the deviceListview
-		mDiscoveryPeersListView.setEnabled(false);
-		mDiscoveryPeersListView.setVisibility(View.GONE);
-		
-		// clear the detail's view
-		if( mDetailView != null ){
-			mDetailView.setVisibility(View.GONE);
-		}
-	}
-	
-	@Override
-	public void onDisconnect() {
-		mDetailView.setVisibility(View.GONE);
-	}
-	
-	@Override
-	public void onConnectionInfoAvailable(WifiP2pInfo info) {
-		if (mProgressDialog != null && mProgressDialog.isShowing()) {
-			mProgressDialog.dismiss();
-		}
-		mWifiP2pInfo = info;
-		bConnected = true;
-
-		/* Update ui */
-		mDetailView.setVisibility(View.VISIBLE);
-		// Update GroupOwner
-		TextView view = (TextView) findViewById(R.id.group_owner);
-		view.setText( getString(R.string.wifip2p_group_owner_text) + info.isGroupOwner );
-		// Update deviceInfo
-		view = (TextView) findViewById(R.id.device_info);
-		view.setText("Group Owner IP - "
-				+ info.groupOwnerAddress.getHostAddress() + "\n local ip:"
-				+ Utility.getLocalIpAddress());
-
-		Logger.d(this.getClass().getName(), "new connect device's info:" + info);
-		if (info.groupFormed && info.isGroupOwner) {
-			// Group don't need to report ip
-			findViewById(R.id.btn_send_ip).setVisibility( View.VISIBLE);
-		} else if (info.groupFormed) {
-			showSendFileVeiw();
-			showReportIPVeiw();
-		}
-
-		// hide the connect button
-		findViewById(R.id.btn_connect).setVisibility(View.GONE);		
-	}
-	
-	@Override
-	public void onPeersAvailable(WifiP2pDeviceList peers) {
-		if (mProgressDialog != null && mProgressDialog.isShowing()) {
-			mProgressDialog.dismiss();
-        }
-		mDiscoveryPeersListView.setEnabled(false);
-		mDiscoveryPeersListView.setVisibility(View.GONE);
-		mDiscoveryPeersAdapter.setDeviceList(peers.getDeviceList());
-		mDiscoveryPeersListView.setEnabled(true);
-		mDiscoveryPeersListView.setVisibility(View.VISIBLE);
-		mDiscoveryPeersListView.setAdapter(mDiscoveryPeersAdapter);		
-	}
 	
 	/**
 	 * Show a toast,call by selfHandler

@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.module;
 
 import java.util.ArrayList;
 import java.util.Collection;

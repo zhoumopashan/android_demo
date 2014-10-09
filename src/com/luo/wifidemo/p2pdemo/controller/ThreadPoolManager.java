@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 
+import com.luo.wifidemo.p2pdemo.module.WifiP2pConfigInfo;
 import com.luo.wifidemo.util.Logger;
 
 /**

@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.module;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.net.Socket;
 
 import android.net.Uri;
 
+import com.luo.wifidemo.p2pdemo.controller.WifiP2pService;
 import com.luo.wifidemo.util.Logger;
 
 public class WrapRunable {

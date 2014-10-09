@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Message;
 import android.util.Pair;
 
+import com.luo.wifidemo.p2pdemo.module.Utility;
+import com.luo.wifidemo.p2pdemo.module.WifiP2pConfigInfo;
 import com.luo.wifidemo.util.Logger;
 
 public class SendImageController {

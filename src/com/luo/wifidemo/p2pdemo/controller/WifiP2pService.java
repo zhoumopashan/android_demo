@@ -1,4 +1,4 @@
-package com.luo.wifidemo.p2pdemo;
+package com.luo.wifidemo.p2pdemo.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,7 +8,6 @@ import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -24,8 +23,6 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ChannelListener;
-import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Looper;
@@ -33,22 +30,13 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.luo.wifidemo.R;
+import com.luo.wifidemo.p2pdemo.module.PeerInfo;
 import com.luo.wifidemo.util.Logger;
 
 /**********************
  *   Main interface
  *********************/
-interface WifiP2pServiceListener extends ConnectionInfoListener, PeerListListener {
-	public void updateLocalDevice(WifiP2pDevice device);
-}
 
-interface WifiP2pActivityListener extends WifiP2pServiceListener{
-	public void showDiscoverPeers();
-	public void onDisconnect();
-	public void resetPeers();
-	public void updateLocalDevice(WifiP2pDevice device);
-	public void sendMessage(Message msg);
-}
 
 /**
  * 
@@ -65,7 +53,7 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 	/** Binder class , use to bind the service */
 	private WifiP2pServiceBinder mBinder = new WifiP2pServiceBinder();
 	public class WifiP2pServiceBinder extends Binder {
-		WifiP2pService getService() {
+		public WifiP2pService getService() {
 			return WifiP2pService.this;
 		}
 	}
