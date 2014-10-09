@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WifiDemo</string>
+    <string name="wifip2p_p2p_not_open">您手机的wifi直联模式没有打开，请打开手机wifi，并取消当前正在连接的路由器</string>
+    <string name="wifip2p_p2p_scanning_title">注意</string>
+    <string name="wifip2p_p2p_scanning">正在扫描附近设备</string>
+    <string name="wifip2p_send_peerinfo_success">成功发送连接请求信息</string>
+    <string name="wifip2p_send_peerinfo_failed">发送连接请求信息失败</string>
+    <string name="wifip2p_send_file_success">文件发送成功</string>
+    <string name="wifip2p_send_file_failed">发送文件失败</string>
+    <string name="wifip2p_rcv_file_success">文件接收成功</string>
+    <string name="wifip2p_rcv_file_failed">接收文件失败</string>
+    <string name="wifip2p_rcv_peer_address">成功收到连接设备信息</string>
+    <string name="wifip2p_group_owner_text">Group owner :</string>
+    <string name="wifip2p_report_ip_tips">点击报告IP可以向Group owner 报告自身IP</string>
+    <string name="wifip2p_select_peer_dialog_title">请选择一个对等设备</string>
+
+</resources>
