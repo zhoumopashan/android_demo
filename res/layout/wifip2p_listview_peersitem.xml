@@ -13,9 +13,8 @@
         android:src="@drawable/ic_launcher" />
 
     <LinearLayout
-        android:layout_width="0dip"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
         android:orientation="vertical" >
 
         <TextView

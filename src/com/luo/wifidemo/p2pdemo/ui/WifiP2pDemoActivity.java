@@ -37,6 +37,7 @@ import com.luo.wifidemo.p2pdemo.controller.WifiP2pService.WifiP2pServiceBinder;
 import com.luo.wifidemo.p2pdemo.module.PeerInfo;
 import com.luo.wifidemo.p2pdemo.module.Utility;
 import com.luo.wifidemo.p2pdemo.module.WiFiPeerListAdapter;
+import com.luo.wifidemo.p2pdemo.module.WifiP2pConfigInfo;
 import com.luo.wifidemo.util.Logger;
 
 /**
@@ -64,7 +65,7 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 			WifiP2pServiceBinder binder = (WifiP2pServiceBinder) service;
 			mP2pService = binder.getService();
 			
-			// 将此DeviceDetailFragment 注册到appNetService中
+			// register the listener to service
 			mP2pService.registerAcitivity(WifiP2pDemoActivity.this);
 		}
 
@@ -441,11 +442,11 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 					mProgressDialog.dismiss();
 				}
 				mProgressDialog = ProgressDialog.show(WifiP2pDemoActivity.this, 
-						"Press back to cancel", "正在链接 :" + mRemoteDevice.deviceAddress, true, true
+						getString(R.string.wifip2p_connecting_cancel), getString(R.string.wifip2p_connecting) + mRemoteDevice.deviceAddress, true, true
 						, new DialogInterface.OnCancelListener() {
 							@Override
 							public void onCancel(DialogInterface dialog) {
-								Toast.makeText(WifiP2pDemoActivity.this, "取消连接", Toast.LENGTH_SHORT).show();
+								Toast.makeText(WifiP2pDemoActivity.this, getString(R.string.wifip2p_connecting_canceled), Toast.LENGTH_SHORT).show();
 								cancelConnect();
 							}
 						});
@@ -541,10 +542,36 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 	}
 	
 	/** Show the sendFile's btn */
-	public void showSendFileVeiw() {
+	private void showSendFileVeiw() {
 		// The other device acts as the client. In this case, we enable the
 		// get file button.
 		findViewById(R.id.btn_start_client).setVisibility(View.VISIBLE);
+	}
+	
+	/** When Receive a file, Show a dialog to user to sure download or not  */
+	private void verifyRecvFile() {
+		AlertDialog.Builder normalDia = new AlertDialog.Builder(this);
+		normalDia.setIcon(R.drawable.ic_launcher);
+		normalDia.setTitle("Verify Receive File");
+		normalDia.setMessage("Receive a file " + recvFileName + "\nSIZE:" + ((double) recvFileSize) / 1024 + "KB\nFROM:" + getNetService().getRemoteSockAddress());
+
+		normalDia.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				AppNetService netService = getNetService();
+				netService.setbVerifyRecvFile(true);
+				netService.verifyRecvFile(); // 必须放在bRecvFile = true;后面。
+			}
+		});
+		normalDia.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				AppNetService netService = getNetService();
+				netService.setbVerifyRecvFile(false);
+				netService.verifyRecvFile(); // 必须放在bRecvFile = true;后面。
+			}
+		});
+		normalDia.create().show();
 	}
 	
 	/** Invoke the service to connect the device by the given config */

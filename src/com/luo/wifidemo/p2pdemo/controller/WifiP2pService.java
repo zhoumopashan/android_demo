@@ -27,10 +27,13 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.luo.wifidemo.R;
 import com.luo.wifidemo.p2pdemo.module.PeerInfo;
+import com.luo.wifidemo.p2pdemo.module.WifiP2pConfigInfo;
+import com.luo.wifidemo.p2pdemo.module.WrapRunable;
 import com.luo.wifidemo.util.Logger;
 
 /**********************
@@ -170,12 +173,13 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 				mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
 					@Override
 					public void onSuccess() {
-						Toast.makeText(WifiP2pService.this, "发现设备成功", Toast.LENGTH_SHORT).show();
+						Toast.makeText(WifiP2pService.this, R.string.wifip2p_discovery_sucess, Toast.LENGTH_SHORT).show();
 					}
 
 					@Override
 					public void onFailure(int reasonCode) {
-						Toast.makeText(WifiP2pService.this, "搜索失败，错误码 : " + reasonCode, Toast.LENGTH_SHORT).show();
+						Toast.makeText(WifiP2pService.this, String.format(getResources().getString(R.string.wifip2p_discovery_failed), reasonCode), 
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 				return true;
@@ -267,7 +271,7 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 
 			@Override
 			public void onFailure(int reason) {
-				Toast.makeText(WifiP2pService.this, "Connect failed. Please retry.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(WifiP2pService.this, R.string.wifip2p_connecting_failed, Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -278,12 +282,12 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 		mWifiP2pManager.cancelConnect(mChannel, new ActionListener() {
 			@Override
 			public void onSuccess() {
-				Toast.makeText(WifiP2pService.this, "连接已取消", Toast.LENGTH_SHORT).show();
+				Toast.makeText(WifiP2pService.this, R.string.wifip2p_connecting_canceled, Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
 			public void onFailure(int reasonCode) {
-				Toast.makeText(WifiP2pService.this, "取消连接操作失败，错误码: " + reasonCode, Toast.LENGTH_SHORT).show();
+				Toast.makeText(WifiP2pService.this, String.format(getResources().getString(R.string.wifip2p_connecting_cancel_failed), reasonCode), Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -497,14 +501,19 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 //	}
 
 	public void handleSendPeerInfo() {
-		mThreadPoolManager.execute(new SendPeerInfoRunable(
+		mThreadPoolManager.execute(WrapRunable.getSendPeerInfoRunable(
 				new PeerInfo(getHostAddress(), WifiP2pConfigInfo.LISTEN_PORT),  this));
 	}
 
 	/**  Send file to the given device(host,port)  */
 	public void handleSendFile(String host, int port, Uri uri) {
 		Logger.d(this.getClass().getName(), "handleSendFile");
-		mThreadPoolManager.execute(new SendFileRunable(host, port, uri, this));
+		mThreadPoolManager.execute(WrapRunable.getSendFileRunable(host, port, uri, this));
+	}
+	
+	/**  handleRecvFile from other peers  */
+	public void handleRecvFile(InputStream ins) {
+		mSendImageCtrl.handleRecvFile(ins);
 	}
 
 	/**
@@ -518,8 +527,7 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 			outs.write(mPeerInfoList.size());
 			for (PeerInfo peerInfo : mPeerInfoList) {
 				String tmp = peerInfo.toString();
-				// String tmp = "peer:" + peerInfo.host + "port:" +
-				// peerInfo.port;
+				// String tmp = "peer:" + peerInfo.host + "port:" + peerInfo.port;
 				outs.write(tmp.length());
 				try {
 					outs.write(tmp.getBytes());
@@ -543,11 +551,11 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 	 */
 	public void handleSendStream(String host, int port, InputStream ins) {
 		// let's go and test ...
-		mThreadPoolManager.execute(new SendStreamRunable(host, port, ins, this));
+		mThreadPoolManager.execute(WrapRunable.getSendStreamRunnable(host, port, ins, this));
 	}
 
 	public void handleSendString(String host, int port, String data) {
-		mThreadPoolManager.execute(new SendStringRunable(host, port, data, this));
+		mThreadPoolManager.execute(WrapRunable.getSendStringRunable(host, port, data, this));
 	}
 
 	@Override
@@ -580,7 +588,7 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 		Logger.d(TAG," onConnectionInfoAvailable ");
 		mWifiP2pInfo = info;
 		if (info.groupFormed && info.isGroupOwner) {
-			Logger.d(TAG, "owner - info.groupFormed && info.isGroupOwner...");
+			Logger.d(TAG, "I'm the group's owner");
 			handleBroadcastPeerList();
 		} else if (info.groupFormed) {
 			handleSendPeerInfo();

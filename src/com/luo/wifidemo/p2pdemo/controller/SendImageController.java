@@ -204,7 +204,7 @@ public class SendImageController {
 	}
 	
 	/**
-	 * call when recive file's inputStream from socket
+	 * Call when receive file's inputStream from socket
 	 */
 	public void handleRecvFile(InputStream ins) {
 		// Mark the file's info
@@ -249,7 +249,8 @@ public class SendImageController {
 				mRecvFileSize = Long.parseLong(strSize);
 				mRecvFileName = strBuffer.substring(offset2 + 5, strBuffer.length());
 
-				Logger.d(TAG, "iFileSize:" + Integer.parseInt(strSize) + " strFileName:" + strBuffer.substring(offset2 + 5, strBuffer.length()));
+				Logger.d(TAG, "iFileSize:" + mRecvFileSize + " strFileName:" + mRecvFileName);
+				
 				// show the verify dialog
 				postVerifyRecvFile();
 				return true;

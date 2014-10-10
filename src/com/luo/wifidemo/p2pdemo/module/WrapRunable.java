@@ -12,8 +12,28 @@ import android.net.Uri;
 import com.luo.wifidemo.p2pdemo.controller.WifiP2pService;
 import com.luo.wifidemo.util.Logger;
 
+/**
+ * Wrap all runnable
+ * 
+ * @author luochenxun
+ */
 public class WrapRunable {
-
+	
+	public static SendStreamRunable getSendStreamRunnable(String host, int port, InputStream ins, WifiP2pService netService){
+		return new SendStreamRunable(host, port, ins, netService);
+	}
+	
+	public static SendStringRunable getSendStringRunable(String host, int port, String data, WifiP2pService netService){
+		return new SendStringRunable(host, port, data, netService);
+	}
+	
+	public static SendPeerInfoRunable getSendPeerInfoRunable(PeerInfo peerInfo, WifiP2pService netService){
+		return new SendPeerInfoRunable(peerInfo, netService);
+	}
+	
+	public static SendFileRunable getSendFileRunable(String host, int port, Uri uri, WifiP2pService netService){
+		return new SendFileRunable(host, port, uri, netService);
+	}
 }
 
 
