@@ -1,6 +1,8 @@
 package com.luo.wifidemo.p2pdemo.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
@@ -9,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Message;
 import android.util.Pair;
 
@@ -218,14 +221,39 @@ public class SendImageController {
 				extName =mRecvFileName.substring(dotIndex);
 			}
 		}
-		Logger.d(TAG, "activity.recvFileName():" + mRecvFileName + " extName:" + extName);
+		Logger.d(TAG, "传输文件名：" + mRecvFileName + " ， 后缀 extName:" + extName);
 
 		// Wait for ui's comfirm
 		if (waitForVerifyRecvFile() && isbVerifyRecvFile()) {
+			Logger.d(TAG, "接收成功");
 			recvFileAndSave(ins, extName);
 		} else{
+			Logger.d(TAG, "接收失败");
 			postRecvFileResult(-1);
 		}
+	}
+	
+	public void postRecvFileResult(int result) {
+		Message msg = new Message();
+		msg.what = WifiP2pConfigInfo.MSG_REPORT_RECV_FILE_RESULT;
+		msg.arg1 = result;
+		mActivity.sendMessage(msg);
+	}
+	
+	public void postSendRecvBytes(int sendBytes, int recvBytes){
+		Message msg = new Message();
+		msg.what = WifiP2pConfigInfo.MSG_SEND_RECV_FILE_BYTES;
+		msg.arg1 = sendBytes;// send;
+		msg.arg2 = recvBytes;// recv;
+		mActivity.sendMessage(msg);		
+	}
+	
+	private boolean bVerifyRecvFile = false;
+	public boolean isbVerifyRecvFile() {
+		return bVerifyRecvFile;
+	}
+	public void setbVerifyRecvFile(boolean bVerifyRecvFile) {
+		this.bVerifyRecvFile = bVerifyRecvFile;
 	}
 	
 	/**
@@ -249,7 +277,7 @@ public class SendImageController {
 				mRecvFileSize = Long.parseLong(strSize);
 				mRecvFileName = strBuffer.substring(offset2 + 5, strBuffer.length());
 
-				Logger.d(TAG, "iFileSize:" + mRecvFileSize + " strFileName:" + mRecvFileName);
+				Logger.d(TAG, "iFileSize:" + mRecvFileSize + " \nstrFileName:" + mRecvFileName);
 				
 				// show the verify dialog
 				postVerifyRecvFile();
@@ -258,6 +286,41 @@ public class SendImageController {
 			return false;
 		} catch (IOException e) {
 			Logger.e( TAG, e.getMessage() );
+			return false;
+		}
+	}
+	
+	public boolean recvFileAndSave(InputStream ins, String extName) {
+		try {
+			final File recvFile = new File(
+					Environment.getExternalStorageDirectory()
+							+ "/file-"
+							+ System.currentTimeMillis() + extName);
+
+			File dirs = new File(recvFile.getParent());
+			if (!dirs.exists())
+				dirs.mkdirs();
+			recvFile.createNewFile();
+
+			FileOutputStream fileOutS = new FileOutputStream(recvFile);
+
+			byte buf[] = new byte[1024];
+			int len;
+			while ((len = ins.read(buf)) != -1) {
+				fileOutS.write(buf, 0, len);
+				// Call back the ui for progress
+				postSendRecvBytes(0, len);
+
+			}
+			fileOutS.close();
+			String strFile = recvFile.getAbsolutePath();
+			if (strFile != null) {
+				//  Go, let's go and test a new cool & powerful method.
+				Utility.openFile(mActivity.getActivity(), recvFile);
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

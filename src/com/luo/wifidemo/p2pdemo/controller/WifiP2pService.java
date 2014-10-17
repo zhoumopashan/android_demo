@@ -515,6 +515,40 @@ public class WifiP2pService extends Service implements ChannelListener, WifiP2pS
 	public void handleRecvFile(InputStream ins) {
 		mSendImageCtrl.handleRecvFile(ins);
 	}
+	
+	/**  handleRecvFileInfo from other peers  */
+	public void handleRecvFileInfo(InputStream ins) {
+		mSendImageCtrl.handleRecvFileInfo(ins);
+	}
+	
+	/**  handleRecvPeerList from other peers  */
+	public boolean handleRecvPeerList(InputStream ins) {
+		try {
+			mPeerInfoList.clear();
+			int peerListSize = ins.read();
+			for (int i = 0; i < peerListSize; ++i) {
+				int bufferLen = ins.read();
+				byte[] buffer = new byte[256];
+				ins.read(buffer, 0, bufferLen);
+				String strBuffer = new String(buffer, 0, bufferLen);
+				int offset1 = strBuffer.indexOf("peer:");
+				int offset2 = strBuffer.indexOf("port:");
+				Log.d(TAG, "recvPeerSockAddr strBuffer:"
+						+ strBuffer);
+				if (offset1 != -1 && offset2 != -1) {
+					String host = strBuffer.substring(offset1 + 5, offset2);
+					int port = Integer.parseInt(strBuffer.substring(offset2 + 5,
+							strBuffer.length()));
+					mPeerInfoList.add(new PeerInfo(host, port));
+				}
+			}
+			postRecvPeerList(mPeerInfoList.size());
+			return true;
+		} catch (IOException e) {
+			Logger.e(TAG, e.getMessage());
+			return false;
+		}
+	}
 
 	/**
 	 * After the network reConnect, a group owner send broadcast <br>

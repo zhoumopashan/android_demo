@@ -550,25 +550,27 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 	
 	/** When Receive a file, Show a dialog to user to sure download or not  */
 	private void verifyRecvFile() {
+		
+		String recvFileName = mP2pService.getSendImageController().getRecvFileName();
+		long recvFileSize = mP2pService.getSendImageController().getRecvFileSize();
+		
 		AlertDialog.Builder normalDia = new AlertDialog.Builder(this);
 		normalDia.setIcon(R.drawable.ic_launcher);
 		normalDia.setTitle("Verify Receive File");
-		normalDia.setMessage("Receive a file " + recvFileName + "\nSIZE:" + ((double) recvFileSize) / 1024 + "KB\nFROM:" + getNetService().getRemoteSockAddress());
+		normalDia.setMessage("Receive a file " + recvFileName + "\nSIZE:" + ( recvFileSize) / 1024 + "KB\nFROM:" + mP2pService.getRemoteSockAddress());
 
 		normalDia.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				AppNetService netService = getNetService();
-				netService.setbVerifyRecvFile(true);
-				netService.verifyRecvFile(); // 必须放在bRecvFile = true;后面。
+				mP2pService.getSendImageController().setbVerifyRecvFile(true);
+				mP2pService.getSendImageController().verifyRecvFile(); 
 			}
 		});
 		normalDia.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				AppNetService netService = getNetService();
-				netService.setbVerifyRecvFile(false);
-				netService.verifyRecvFile(); // 必须放在bRecvFile = true;后面。
+				mP2pService.getSendImageController().setbVerifyRecvFile(false);
+				mP2pService.getSendImageController().verifyRecvFile(); 
 			}
 		});
 		normalDia.create().show();
@@ -619,6 +621,11 @@ public class WifiP2pDemoActivity extends Activity implements WifiP2pActivityList
 		Toast toast = Toast.makeText(this, tipsID, Toast.LENGTH_LONG);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
+	}
+
+	@Override
+	public Activity getActivity() {
+		return this;
 	}
 
 }

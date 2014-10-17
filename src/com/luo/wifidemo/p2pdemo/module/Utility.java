@@ -45,6 +45,7 @@ public class Utility {
 
 	static public void openFile(Activity activity, File file) {
 		// Uri uri = Uri.parse("file://"+file.getAbsolutePath());
+		Logger.d("open File" , "fileName:" + file.getAbsolutePath());
 		Intent intent = new Intent();
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.setAction(Intent.ACTION_VIEW);
