@@ -11,7 +11,8 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
-import android.util.Log;
+
+import com.luo.wifidemo.util.Logger;
 
 public class WifiUtil {
 
@@ -37,7 +38,7 @@ public class WifiUtil {
 	/** wifi names */
 	private ArrayList<String> mWifiNameList = new ArrayList<String>();
 	
-
+	
 	/**
 	 * Constructor
 	 */
@@ -80,7 +81,7 @@ public class WifiUtil {
 		mScanResultList = mWifiManager.getScanResults();
 		mWifiConfigList = mWifiManager.getConfiguredNetworks();
 		if(mScanResultList == null){
-			Log.e(TAG,"Scan Failed , mScanResultList is null");
+			Logger.e(TAG,"Scan Failed , mScanResultList is null");
 		}
 	}
 
@@ -101,7 +102,15 @@ public class WifiUtil {
 		// Print result in log
 		printScanResult(mScanResultList);
 		
-		return mWifiNameList;
+		return getScanResultName();
+	}
+	
+	public ArrayList<String> getScanResultName(){
+		ArrayList<String> wifiNames = new ArrayList<String>();
+		for(String wifiName : mWifiNameList){
+			wifiNames.add(wifiName);
+		}
+		return wifiNames;
 	}
 	
 	/** Get scanresult member */
@@ -129,10 +138,11 @@ public class WifiUtil {
 					.append(" capabilities : ").append(result.capabilities)
 					.append(" frequency : ").append(result.frequency)
 					.append(" level : ").append(result.level)
-					.append(" describeContents : ").append(result.describeContents());
+					.append(" describeContents : ").append(result.describeContents())
+					.append("\n------------------\n");
 		}
 		
-		Log.d(TAG, "getScanResult :" + stringBuilder.toString());
+		Logger.d(TAG, "getScanResult :" + stringBuilder.toString());
 	}
 
 	/** Create a wifi Lock */
@@ -187,6 +197,17 @@ public class WifiUtil {
 			}
 		}
 	}
+	
+	public void connectNetwork(String ssid , String pwd){
+		if (mScanResultList != null) {
+			for (int i = 0; i < mScanResultList.size(); i++) {
+				mScanResult = mScanResultList.get(i);
+				if (mScanResult.SSID.toString().contains(ssid)) {
+					addNetwork(CreateWifiInfo(ssid, pwd, 3));
+				}
+			}
+		}
+	}
 
 	/**
 	 * Allow a previously configured network to be associated with.
@@ -206,10 +227,10 @@ public class WifiUtil {
 	 */
 	public void addNetwork(WifiConfiguration wcg) {
 		int wcgID = mWifiManager.addNetwork(wcg);
-		boolean b = mWifiManager.enableNetwork(wcgID, true);
+		boolean b = mWifiManager.enableNetwork(wcgID, true);//enableNetwork(int netId, boolean disableOthers)
 		
-		Log.d(TAG,"network id : " + wcgID );
-		Log.d(TAG,"Is the network enable : " + b );
+		Logger.d(TAG,"network id : " + wcgID );
+		Logger.d(TAG,"Is the network enable : " + b );
 	}
 
 	/** disconnectWifi */
