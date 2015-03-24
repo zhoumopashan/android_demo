@@ -2,18 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/p2p_demo_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="p2p_demo" />
-    
-        <Button
-        android:id="@+id/wifi_util_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="wifi_util" />
+    <ListView
+        android:id="@+id/activity_main_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#771d1d1d"
+        android:dividerHeight="1dp" >
+    </ListView>
 
 </LinearLayout>

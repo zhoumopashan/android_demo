@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="tag_imageloader" type="id"></item>
+    <item name="tag_adapter_item" type="id"></item>
+</resources>

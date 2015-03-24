@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="photo_max_len">450dp</dimen>
+    <dimen name="photo_min_len">150dp</dimen>
+
+</resources>

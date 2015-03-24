@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.luo.wifidemo"
+    package="com.luo.demos.wifidemo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -33,11 +33,12 @@
         android:targetSdkVersion="19" />
 
     <application
+        android:name="com.luo.demos.MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.luo.demos.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,15 +47,20 @@
             </intent-filter>
         </activity>
 
-        <!-- P2p Demo -->
-        <activity android:name="com.luo.wifidemo.p2pdemo.ui.WifiP2pDemoActivity" >
+        <!-- Wifi Demo main -->
+        <activity android:name="com.luo.demos.wifidemo.MainActivity" >
         </activity>
+
+        <!-- Wifi P2p Demo -->
+        <activity android:name="com.luo.demos.wifidemo.p2pdemo.ui.WifiP2pDemoActivity" >
+        </activity>
+
         <service
-            android:name="com.luo.wifidemo.p2pdemo.controller.WifiP2pService"
+            android:name="com.luo.demos.wifidemo.p2pdemo.controller.WifiP2pService"
             android:enabled="true" />
-        
+
         <!-- wifi util Demo -->
-        <activity android:name="com.luo.wifidemo.wifitools.ui.WifiToolsActivity" >
+        <activity android:name="com.luo.demos.wifidemo.wifitools.ui.WifiToolsActivity" >
         </activity>
     </application>
 

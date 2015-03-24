@@ -2,6 +2,15 @@
 <resources>
 
     <string name="app_name">WifiDemo</string>
+    
+    <!-- items -->
+    <string name="wifi">wifi 模块</string>
+
+    <!-- utils -->
+    <string name="su">su</string>
+    <string name="sdcard">/sdcard</string>
+
+    <!-- wifi demo -->
     <string name="wifip2p_p2p_not_open">您手机的wifi直联模式没有打开，请打开手机wifi，并取消当前正在连接的路由器</string>
     <string name="wifip2p_p2p_scanning_title">注意</string>
     <string name="wifip2p_p2p_scanning">正在扫描附近设备</string>
