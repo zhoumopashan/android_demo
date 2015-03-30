@@ -1,4 +1,4 @@
-package com.luo.demos;
+package com.luo.demos.graphic.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import com.luo.demos.uidemo.listview.ViewHolder;
 import com.luo.demos.utils.Logger;
 import com.luo.demos.wifidemo.R;
 
-public class MainActivity extends Activity implements View.OnClickListener , OnItemClickListener{
+public class MainActivity extends Activity implements View.OnClickListener, OnItemClickListener {
 
 	/*-----------------------------
 	 *    Macros 
@@ -48,8 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener , OnI
 	private HashMap<Integer, Class> mItemMap = new HashMap<Integer, Class>();
 	private List<Integer> mItemNameList = new ArrayList<Integer>();
 	{
-		mItemMap.put(R.string.game_and_graphic, com.luo.demos.graphic.ui.MainActivity.class);
-		mItemMap.put(R.string.wifi, com.luo.demos.wifidemo.MainActivity.class);
+		mItemMap.put(R.string.paint, com.luo.demos.graphic.ui.PaintActivity.class);
+		mItemMap.put(R.string.canvas, com.luo.demos.graphic.ui.CanvasActivity.class);
 
 		// init list by the itemName-class-map
 		Iterator<Entry<Integer, Class>> iter = mItemMap.entrySet().iterator();

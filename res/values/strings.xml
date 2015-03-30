@@ -5,6 +5,10 @@
     
     <!-- items -->
     <string name="wifi">wifi 模块</string>
+    <string name="game_and_graphic">Android Game &amp; Graphic</string>
+    <!-- game_and_graphic -->
+    <string name="canvas">Canvas 基本api</string>
+    <string name="paint">Paint 基本api</string>
 
     <!-- utils -->
     <string name="su">su</string>

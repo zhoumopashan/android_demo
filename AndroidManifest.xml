@@ -47,6 +47,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Graphic Demo main -->
+        <activity android:name="com.luo.demos.graphic.ui.MainActivity" >
+        </activity>
+        <activity android:name="com.luo.demos.graphic.ui.CanvasActivity" >
+        </activity>
+        <activity android:name="com.luo.demos.graphic.ui.PaintActivity" >
+        </activity>
+
         <!-- Wifi Demo main -->
         <activity android:name="com.luo.demos.wifidemo.MainActivity" >
         </activity>
